@@ -10,27 +10,30 @@ import (
 	"github.com/mark3labs/mcp-go/server"
 )
 
+var (
+	transport string
+	addr      string
+	basePath  string
+	logLevel  string
+	amURL     string
+)
+
 func main() {
-	var transport string
 	flag.StringVar(&transport, "t", "stdio", "Transport type (stdio or sse)")
-	flag.StringVar(
-		&transport,
-		"transport",
-		"stdio",
-		"Transport type (stdio or sse)",
-	)
-	addr := flag.String("sse-address", "localhost:8000", "The host and port to start the sse server on")
-	basePath := flag.String("base-path", "", "Base path for the sse server")
-	logLevel := flag.String("log-level", "info", "Log level (debug, info, warn, error)")
+	flag.StringVar(&transport, "transport", "stdio", "Transport type (stdio or sse)")
+	flag.StringVar(&addr, "sse-address", "localhost:8000", "The host and port to start the sse server on")
+	flag.StringVar(&basePath, "base-path", "", "Base path for the sse server")
+	flag.StringVar(&logLevel, "log-level", "info", "Log level (debug, info, warn, error)")
+	flag.StringVar(&amURL, "alertmanager-url", "https://localhost:9093", "Alertmanager URL")
 	flag.Parse()
 
-	if err := run(transport, *addr, *basePath, parseLevel(*logLevel)); err != nil {
+	if err := run(); err != nil {
 		panic(err)
 	}
 }
 
-func run(transport, addr, basePath string, logLevel slog.Level) error {
-	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: logLevel})))
+func run() error {
+	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: parseLevel(logLevel)})))
 
 	s := server.NewMCPServer(
 		"mcp-alertmanager",
@@ -41,8 +44,7 @@ func run(transport, addr, basePath string, logLevel slog.Level) error {
 		server.WithResourceCapabilities(true, true),
 		server.WithPromptCapabilities(true),
 	)
-
-	tools.RegisterToolAlerts(s)
+	tools.RegisterToolAlerts(s, amURL)
 
 	switch transport {
 	case "stdio":
