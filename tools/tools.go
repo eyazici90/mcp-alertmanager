@@ -43,7 +43,3 @@ func doRequest(req *http.Request) *mcp.CallToolResult {
 	}
 	return mcp.NewToolResultText(string(body))
 }
-
-func ptr[T any](v T) *T {
-	return &v
-}

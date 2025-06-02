@@ -20,9 +20,9 @@ var toolSilences = mcp.NewTool("list_silences",
 	mcp.WithDescription("List of current silences of the Alertmanager instance. This tool uses `/api/v2/silences` endpoint of Alertmanager API."),
 	mcp.WithToolAnnotation(mcp.ToolAnnotation{
 		Title:           "List of silences",
-		ReadOnlyHint:    ptr(true),
-		DestructiveHint: ptr(false),
-		OpenWorldHint:   ptr(true),
+		ReadOnlyHint:    mcp.ToBoolPtr(true),
+		DestructiveHint: mcp.ToBoolPtr(false),
+		OpenWorldHint:   mcp.ToBoolPtr(true),
 	}),
 )
 

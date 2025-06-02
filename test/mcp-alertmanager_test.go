@@ -28,7 +28,6 @@ func TestMain(m *testing.M) {
 		}
 	}()
 	ctx := context.Background()
-
 	mcpClient, err = client.NewSSEMCPClient("http://localhost:8000/sse")
 	if err != nil {
 		return
@@ -40,7 +39,6 @@ func TestMain(m *testing.M) {
 	mcpClient.OnNotification(func(notification mcp.JSONRPCNotification) {
 		fmt.Printf("Received notification: %s\n", notification.Method)
 	})
-
 	_, err = mcpClient.Initialize(ctx, mcp.InitializeRequest{})
 	if err != nil {
 		return
