@@ -46,6 +46,7 @@ func run() error {
 	)
 	tools.RegisterToolStatus(s, amURL)
 	tools.RegisterToolAlerts(s, amURL)
+	tools.RegisterToolSilences(s, amURL)
 
 	switch transport {
 	case "stdio":

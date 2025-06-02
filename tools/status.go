@@ -17,7 +17,7 @@ func RegisterToolStatus(s *server.MCPServer, url string) {
 }
 
 var toolStatus = mcp.NewTool("get_status",
-	mcp.WithDescription("Get current status of an Alertmanager instance and its cluster."),
+	mcp.WithDescription("Get current status of an Alertmanager instance and its cluster. This tool uses `/api/v2/status` endpoint of Alertmanager API."),
 	mcp.WithToolAnnotation(mcp.ToolAnnotation{
 		Title:           "Get status",
 		ReadOnlyHint:    ptr(true),
