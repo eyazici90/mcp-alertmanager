@@ -43,6 +43,11 @@ func run() error {
 		server.WithToolCapabilities(true),
 		server.WithResourceCapabilities(true, true),
 		server.WithPromptCapabilities(true),
+		server.WithInstructions(`
+You are Virtual Assistant, a tool for interacting with Alertmanager API for different tasks related to monitoring and observability.
+When investigating an alert through list_alerts, check if there is a matched routing by using get_status tool.
+Try not to second guess information - if you don't know something or lack information, it's better to ask.
+`),
 	)
 	tools.RegisterToolStatus(s, amURL)
 	tools.RegisterToolAlerts(s, amURL)
