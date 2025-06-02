@@ -44,6 +44,7 @@ func run() error {
 		server.WithResourceCapabilities(true, true),
 		server.WithPromptCapabilities(true),
 	)
+	tools.RegisterToolStatus(s, amURL)
 	tools.RegisterToolAlerts(s, amURL)
 
 	switch transport {
