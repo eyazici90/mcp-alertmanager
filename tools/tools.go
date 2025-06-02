@@ -8,6 +8,8 @@ import (
 	"github.com/mark3labs/mcp-go/mcp"
 )
 
+type contextKey string
+
 type toolReqParamType interface {
 	string | float64 | bool | []string | []any
 }

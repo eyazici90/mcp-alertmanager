@@ -9,8 +9,6 @@ import (
 	"github.com/mark3labs/mcp-go/server"
 )
 
-type contextKey string
-
 func RegisterToolAlerts(s *server.MCPServer, url string) {
 	s.AddTool(toolAlerts, func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 		ctx = context.WithValue(ctx, contextKey("url"), url)
@@ -18,36 +16,34 @@ func RegisterToolAlerts(s *server.MCPServer, url string) {
 	})
 }
 
-var (
-	toolAlerts = mcp.NewTool("list_alerts",
-		mcp.WithDescription("List of firing and pending alerts of the alertmanager instance. This tool uses `/api/v2/alerts` endpoint of Alertmanager API."),
-		mcp.WithToolAnnotation(mcp.ToolAnnotation{
-			Title:           "List of alerts",
-			ReadOnlyHint:    ptr(true),
-			DestructiveHint: ptr(false),
-			OpenWorldHint:   ptr(true),
-		}),
-		mcp.WithBoolean("active",
-			mcp.Title("Show active alerts"),
-			mcp.Description("If true, the query will include alerts that have state as active."),
-			mcp.DefaultBool(true),
-		),
-		mcp.WithBoolean("silenced",
-			mcp.Title("Show silenced alerts"),
-			mcp.Description("If true, the query will include alerts that have state as silenced."),
-			mcp.DefaultBool(true),
-		),
-		mcp.WithBoolean("inhibited",
-			mcp.Title("Show inhibited alerts"),
-			mcp.Description("If true, the query will include alerts that have state as inhibited."),
-			mcp.DefaultBool(true),
-		),
-		mcp.WithBoolean("unprocessed",
-			mcp.Title("Show unprocessed alerts"),
-			mcp.Description("If true, the query will include alerts that have state as unprocessed."),
-			mcp.DefaultBool(true),
-		),
-	)
+var toolAlerts = mcp.NewTool("list_alerts",
+	mcp.WithDescription("List of active, silenced, inhibited and unprocessed alerts of the alertmanager instance. This tool uses `/api/v2/alerts` endpoint of Alertmanager API."),
+	mcp.WithToolAnnotation(mcp.ToolAnnotation{
+		Title:           "List of alerts",
+		ReadOnlyHint:    ptr(true),
+		DestructiveHint: ptr(false),
+		OpenWorldHint:   ptr(true),
+	}),
+	mcp.WithBoolean("active",
+		mcp.Title("Show active alerts"),
+		mcp.Description("If true, the query will include alerts that have state as active."),
+		mcp.DefaultBool(true),
+	),
+	mcp.WithBoolean("silenced",
+		mcp.Title("Show silenced alerts"),
+		mcp.Description("If true, the query will include alerts that have state as silenced."),
+		mcp.DefaultBool(true),
+	),
+	mcp.WithBoolean("inhibited",
+		mcp.Title("Show inhibited alerts"),
+		mcp.Description("If true, the query will include alerts that have state as inhibited."),
+		mcp.DefaultBool(true),
+	),
+	mcp.WithBoolean("unprocessed",
+		mcp.Title("Show unprocessed alerts"),
+		mcp.Description("If true, the query will include alerts that have state as unprocessed."),
+		mcp.DefaultBool(true),
+	),
 )
 
 func toolAlertsHandler(ctx context.Context, tr mcp.CallToolRequest) (*mcp.CallToolResult, error) {
@@ -72,7 +68,7 @@ func toolAlertsHandler(ctx context.Context, tr mcp.CallToolRequest) (*mcp.CallTo
 	u := fmt.Sprintf("%s/api/v2/alerts", url)
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
 	if err != nil {
-		return mcp.NewToolResultError(fmt.Sprintf("failed to create request: %v", err)), nil
+		return mcp.NewToolResultError(fmt.Sprintf("create request: %v", err)), nil
 	}
 	q := req.URL.Query()
 	q.Add("active", active)
