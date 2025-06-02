@@ -21,7 +21,7 @@ var (
 func main() {
 	flag.StringVar(&transport, "t", "stdio", "Transport type (stdio or sse)")
 	flag.StringVar(&transport, "transport", "stdio", "Transport type (stdio or sse)")
-	flag.StringVar(&addr, "sse-address", "localhost:8000", "The host and port to start the sse server on")
+	flag.StringVar(&addr, "sse-address", ":8000", "The host and port to start the sse server on")
 	flag.StringVar(&basePath, "base-path", "", "Base path for the sse server")
 	flag.StringVar(&logLevel, "log-level", "info", "Log level (debug, info, warn, error)")
 	flag.StringVar(&amURL, "alertmanager-url", "https://localhost:9093", "Alertmanager URL")
