@@ -27,3 +27,6 @@ run: build ## Run the MCP server in stdio mode.
 
 run-sse: build ## Run the MCP server in SSE mode.
 	./bin/mcp-alertmanager --transport sse --log-level debug
+
+docker-build:
+	# TBD
