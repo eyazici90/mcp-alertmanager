@@ -1,4 +1,4 @@
-package test
+package server_test
 
 import (
 	"context"
@@ -8,8 +8,10 @@ import (
 	"os"
 	"testing"
 
+	"github.com/eyazici90/mcp-alertmanager/server"
 	"github.com/mark3labs/mcp-go/client"
 	"github.com/mark3labs/mcp-go/mcp"
+	mcpserver "github.com/mark3labs/mcp-go/server"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -28,7 +30,11 @@ func TestMain(m *testing.M) {
 		}
 	}()
 	ctx := context.Background()
-	mcpClient, err = client.NewSSEMCPClient("http://localhost:8000/sse")
+
+	srv := mcpserver.NewTestServer(
+		server.New("https://localhost:9093"),
+	)
+	mcpClient, err = client.NewSSEMCPClient(fmt.Sprintf("%s/sse", srv.URL))
 	if err != nil {
 		return
 	}

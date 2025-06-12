@@ -17,7 +17,7 @@ lint: install-linter
 	./bin/golangci-lint run
 
 test: tidy
-	go test ./...
+	go test -v ./...
 
 build: tidy
 	go build -o ./bin/mcp-alertmanager ./cmd/mcp-alertmanager/main.go
