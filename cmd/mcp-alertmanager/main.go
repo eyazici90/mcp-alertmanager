@@ -6,8 +6,8 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/eyazici90/mcp-alertmanager/tools"
-	"github.com/mark3labs/mcp-go/server"
+	"github.com/eyazici90/mcp-alertmanager/server"
+	mcpserver "github.com/mark3labs/mcp-go/server"
 )
 
 var (
@@ -35,36 +35,19 @@ func main() {
 func run() error {
 	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: parseLevel(logLevel)})))
 
-	s := server.NewMCPServer(
-		"mcp-alertmanager",
-		"0.0.1",
-		server.WithRecovery(),
-		server.WithLogging(),
-		server.WithToolCapabilities(true),
-		server.WithResourceCapabilities(true, true),
-		server.WithPromptCapabilities(true),
-		server.WithInstructions(`
-You are Virtual Assistant, a tool for interacting with Alertmanager API for different tasks related to monitoring and observability.
-When investigating an alert through list_alerts, check if there is a matched routing by using get_status tool.
-Try not to second guess information - if you don't know something or lack information, it's better to ask.
-`),
-	)
-	tools.RegisterToolStatus(s, amURL)
-	tools.RegisterToolAlerts(s, amURL)
-	tools.RegisterToolSilences(s, amURL)
-
+	srv := server.New(amURL)
 	switch transport {
 	case "stdio":
 		slog.Info("Starting Alertmanager MCP server using stdio transport")
-		if err := server.ServeStdio(s); err != nil {
+		if err := mcpserver.ServeStdio(srv); err != nil {
 			fmt.Printf("Server error: %v\n", err)
 		}
 	case "sse":
-		srv := server.NewSSEServer(s,
-			server.WithStaticBasePath(basePath),
+		s := mcpserver.NewSSEServer(srv,
+			mcpserver.WithStaticBasePath(basePath),
 		)
 		slog.Info("Starting Alertmanager MCP server using SSE transport", "address", addr, "basePath", basePath)
-		if err := srv.Start(addr); err != nil {
+		if err := s.Start(addr); err != nil {
 			return err
 		}
 	default:
